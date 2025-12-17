@@ -48,7 +48,7 @@ app.put("/todos/:id", authMiddlware, async (req, res) => {
       return res.status(404).json({ message: "Todo Not Found" });
     }
     const todo = await TodoModel.findByIdAndUpdate(
-      { _id: id },
+      { _id: id, user: req.userId },
       { isComplete: isComplete }
     );
     console.log(todo);
@@ -62,12 +62,17 @@ app.put("/todos/:id", authMiddlware, async (req, res) => {
 app.delete("/todos/:id", authMiddlware, async (req, res) => {
   try {
     const { id } = req.params;
-    const todoExits = await TodoModel.findById(id);
-    console.log(todoExits);
-    if (!todoExits) {
+
+    const todo = await TodoModel.findOneAndDelete({
+      _id: id,
+      user: req.userId,
+    });
+
+    // Agar todo null hai, matlab ya toh mila nahi, ya apka nahi tha
+    if (!todo) {
       return res.status(404).json({ message: "Todo Not Found" });
     }
-    const todo = await TodoModel.findByIdAndDelete(id);
+
     res.json({ message: "Todo Deleted", data: todo });
   } catch (error) {
     console.log(error);
