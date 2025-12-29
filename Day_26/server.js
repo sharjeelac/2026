@@ -13,7 +13,7 @@ connecDB();
 const app = express();
 app.use(express.json());
 
-app.get("/todos", authMiddlware, async (req, res) => {
+app.get("/api/todos", authMiddlware, async (req, res) => {
   try {
     const todos = await TodoModel.find({ user: req.userId });
     res.json({ message: "Todos List", data: todos });
@@ -22,7 +22,7 @@ app.get("/todos", authMiddlware, async (req, res) => {
   }
 });
 
-app.post("/todos", authMiddlware, async (req, res) => {
+app.post("/api/todos", authMiddlware, async (req, res) => {
   try {
     const todo = req.body;
     const { title } = todo;
@@ -39,7 +39,7 @@ app.post("/todos", authMiddlware, async (req, res) => {
   }
 });
 
-app.put("/todos/:id", authMiddlware, async (req, res) => {
+app.put("/api/todos/:id", authMiddlware, async (req, res) => {
   try {
     const { id } = req.params;
     const { isComplete } = req.body;
@@ -59,7 +59,7 @@ app.put("/todos/:id", authMiddlware, async (req, res) => {
   }
 });
 
-app.delete("/todos/:id", authMiddlware, async (req, res) => {
+app.delete("/api/todos/:id", authMiddlware, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -80,7 +80,7 @@ app.delete("/todos/:id", authMiddlware, async (req, res) => {
   }
 });
 
-app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if ((!name, !email, !password)) {
@@ -118,7 +118,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     if ((!email, !password)) {

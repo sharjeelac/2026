@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
 
 const TrashIcon = () => (
   <svg
@@ -75,6 +76,16 @@ const App = () => {
     { id: 3, task: "Design UI Mockup", isComplete: false },
   ]);
   const [task, setTask] = useState("");
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    const res = await axios.get("/api/todos");
+    setTodos(res.data);
+    console.log(res.data);
+  };
 
   //calculate progess
   const completedCount = todos.filter((t) => t.isComplete).length;
