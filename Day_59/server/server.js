@@ -8,7 +8,7 @@ import upload from "./middleware/uploadMiddleware.js";
 dotenv.config();
 
 mongoose
-  .connect('mongodb://localhost:27017/mydatabase')
+  .connect("mongodb://localhost:27017/mydatabase")
   .then(() => {
     console.log("mongodb Connected");
   })
@@ -53,8 +53,19 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
 app.get("/images", async (req, res) => {
   try {
-    const images = await ImageModel.find().sort({ createdAt: -1 });
-    res.status(200).json(images);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+    const images = await ImageModel.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalImage = await ImageModel.countDocuments();
+    const totalPages = Math.ceil(totalImage / limit);
+
+    res.status(200).json({ images, totalImage, currentPage: page, totalPages });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch images" });
   }
